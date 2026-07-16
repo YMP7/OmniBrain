@@ -3,8 +3,10 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 
 def create_dummy_pdf():
-    os.makedirs("test_data", exist_ok=True)
-    pdf_path = os.path.join("test_data", "financial_report.pdf")
+    PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    test_data_dir = os.path.join(PROJECT_ROOT, "test_data")
+    os.makedirs(test_data_dir, exist_ok=True)
+    pdf_path = os.path.join(test_data_dir, "financial_report.pdf")
     
     c = canvas.Canvas(pdf_path, pagesize=letter)
     

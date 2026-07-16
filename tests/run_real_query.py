@@ -5,7 +5,8 @@ def run():
     api_key = os.getenv("OPENAI_API_KEY")
 
     print("1. Uploading PDF...")
-    pdf_path = "test_data/financial_report.pdf"
+    PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    pdf_path = os.path.join(PROJECT_ROOT, "test_data", "financial_report.pdf")
     if not os.path.exists(pdf_path):
         print(f"Error: {pdf_path} not found.")
         return

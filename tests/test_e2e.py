@@ -39,29 +39,65 @@ def test_missing_api_key_graceful_fail(page: Page):
     expect(error_message).to_be_visible(timeout=5000)
     print("Graceful Fail E2E Test Passed.")
 
+def test_upload_missing_api_key():
+    """
+    Validates that /upload returns a 500 error if the OPENAI_API_KEY is missing.
+    """
+    import os
+    import sys
+    PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    sys.path.insert(0, PROJECT_ROOT)
+    
+    from fastapi.testclient import TestClient
+    from backend.api import app
+    
+    # Ensure OPENAI_API_KEY is unset
+    if "OPENAI_API_KEY" in os.environ:
+        del os.environ["OPENAI_API_KEY"]
+        
+    client = TestClient(app)
+    
+    pdf_path = os.path.join(PROJECT_ROOT, "test_data", "financial_report.pdf")
+    
+    print("Testing /upload with missing API key...")
+    with open(pdf_path, "rb") as f:
+        res = client.post("/upload", files={"file": f})
+    
+    assert res.status_code == 500, f"Expected 500, got {res.status_code}. Response: {res.text}"
+    assert "OPENAI_API_KEY" in res.text, f"Expected API key error message, got: {res.text}"
+    print("Upload Missing API Key Test Passed.")
+
 def test_functional_backend():
     """
     Validates the end-to-end flow of the Agentic Orchestrator (Supervisor -> Search -> Vision/SQL)
     and asserts that the final synthesis properly cites the page number.
     """
     import os
+    import sys
+    PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    sys.path.insert(0, PROJECT_ROOT)
+    
+    # Set dummy key so ingestion doesn't fail the manual check
+    os.environ["OPENAI_API_KEY"] = "dummy_for_mock_test"
+    
     from fastapi.testclient import TestClient
     from unittest.mock import patch, MagicMock
-    from api import app
+    from backend.api import app
     from langchain_core.messages import AIMessage
     
     client = TestClient(app)
     
-    pdf_path = "test_data/financial_report.pdf"
+    pdf_path = os.path.join(PROJECT_ROOT, "test_data", "financial_report.pdf")
     if not os.path.exists(pdf_path):
         print("SKIPPED: Dummy PDF not found. Run generate_test_pdf.py first.")
         return
         
     print("1. Uploading PDF to /upload (Mocked Embeddings)...")
-    with patch("ingestion.OpenAIEmbeddings") as MockEmbeddings:
+    with patch("backend.ingestion.OpenAIEmbeddings") as MockEmbeddings:
         # Mock embedding vectors so ingestion doesn't call OpenAI
+        # embed_documents takes a list of texts and should return a list of equal length
         mock_instance = MockEmbeddings.return_value
-        mock_instance.embed_documents.return_value = [[0.1] * 1536] * 10
+        mock_instance.embed_documents.side_effect = lambda texts: [[0.1] * 1536 for _ in texts]
         with open(pdf_path, "rb") as f:
             res = client.post("/upload", files={"file": f})
         assert res.status_code == 200, f"Upload failed: {res.text}"
@@ -70,10 +106,10 @@ def test_functional_backend():
     query = "According to the 2023 report, what was the Q3 revenue growth for Asia Pacific? Please check the chart."
     
     # We will mock the LLM inside supervisor.py and the specialized agents
-    with patch("supervisor.ChatOpenAI") as MockLLM, \
-         patch("supervisor.search_agent") as mock_search, \
-         patch("supervisor.vision_agent") as mock_vision, \
-         patch("supervisor.sql_agent") as mock_sql:
+    with patch("backend.supervisor.ChatOpenAI") as MockLLM, \
+         patch("backend.supervisor.search_agent") as mock_search, \
+         patch("backend.supervisor.vision_agent") as mock_vision, \
+         patch("backend.supervisor.sql_agent") as mock_sql:
          
         # Agent Mocks
         mock_search.return_value = "Mention of revenue growth chart [Source: financial_report.pdf, Page: 2]"
@@ -125,6 +161,9 @@ if __name__ == "__main__":
             test_react_ui_loads(page)
             test_missing_api_key_graceful_fail(page)
             print("UI E2E tests passed successfully.")
+            
+            print("\nRunning API Failure Case Tests...")
+            test_upload_missing_api_key()
             
             print("\nRunning Functional Backend E2E Test...")
             test_functional_backend()

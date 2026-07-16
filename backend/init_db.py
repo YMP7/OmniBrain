@@ -1,7 +1,11 @@
 import sqlite3
+import os
+
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+DB_PATH = os.path.join(PROJECT_ROOT, "omnibrain.db")
 
 def init_db():
-    conn = sqlite3.connect('omnibrain.db')
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
     cursor.executescript('''

@@ -16,6 +16,7 @@ OmniBrain is a multimodal, multi-agent financial document analysis system built 
 - **UI Rendering:** Playwright ensures the React DOM renders the correct bento-grid layouts (Ingestion Panel, Query Panel, Findings Display).
 - **Graceful Failure:** The UI properly displays an inline error component (e.g. `"Query failed: Internal Server Error"`) without crashing if the backend returns a 500 status code (such as when the API key is missing).
 - **State Accumulation & Citations (Mocked):** The backend is mocked to intercept OpenAI calls. It verifies that `supervisor.py` successfully aggregates findings from *multiple* agents into `intermediate_findings`, and that the strict `[Source: X, Page: Y]` citation check enforces properly formatted citations in the final synthesized output.
+- **Backend Error Handling:** The `/upload` route correctly catches backend ingestion failures (e.g. missing `OPENAI_API_KEY` or file parsing errors) by surfacing a strict HTTP 500 error, instead of silently suppressing exceptions and returning a false success message.
 
 **What is NOT yet verified:**
 - **A real, non-mocked GPT-4o run.** While the integration code is confirmed to successfully dial out to the live OpenAI API, testing is currently blocked by an `HTTP 429 Insufficient Quota` billing error on the provided API key. The real LLM reasoning behavior and vision parsing quality remain pending until a funded key is supplied.

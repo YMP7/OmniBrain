@@ -6,7 +6,10 @@ from langgraph.graph import StateGraph, END
 import os
 import json
 
-from agents import search_agent, sql_agent, vision_agent
+import os
+from .agents import search_agent, sql_agent, vision_agent
+
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
 # ---------------------------------------------------------
 # State Definition
@@ -85,11 +88,11 @@ def vision_node(state: AgentState):
     
     import re
     # Dynamically build image path from the last search citation (e.g., [Source: doc.pdf, Page: 4])
-    image_path = state.get("image_path", "extracted_images/sample_page1.png") 
+    image_path = state.get("image_path", os.path.join(PROJECT_ROOT, "extracted_images", "sample_page1.png")) 
     matches = re.findall(r"\[Source: (.*?), Page: (\d+)\]", findings)
     if matches:
         last_source, last_page = matches[-1]
-        image_path = f"extracted_images/{last_source}_page{last_page}.png"
+        image_path = os.path.join(PROJECT_ROOT, "extracted_images", f"{last_source}_page{last_page}.png")
         
     result = vision_agent(query, image_path)
     return {"intermediate_findings": f"\n\n[Vision Agent]\n{result}", "next_agent": "supervisor"}

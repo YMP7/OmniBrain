@@ -4,8 +4,10 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 import shutil
 import os
-from ingestion import ingest_pdf
-from supervisor import omni_brain_app
+
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+from .ingestion import ingest_pdf
+from .supervisor import omni_brain_app
 from langchain_core.messages import HumanMessage
 
 app = FastAPI(title="OmniBrain API")
@@ -27,8 +29,9 @@ async def upload_file(file: UploadFile = File(...)):
     if not file.filename.endswith(".pdf"):
         raise HTTPException(status_code=400, detail="Only PDF files are supported.")
         
-    os.makedirs("temp_uploads", exist_ok=True)
-    temp_path = os.path.join("temp_uploads", file.filename)
+    temp_uploads_dir = os.path.join(PROJECT_ROOT, "temp_uploads")
+    os.makedirs(temp_uploads_dir, exist_ok=True)
+    temp_path = os.path.join(temp_uploads_dir, file.filename)
     
     try:
         with open(temp_path, "wb") as buffer:
@@ -68,7 +71,7 @@ async def query_omnibrain(req: QueryRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-frontend_dist = os.path.join(os.path.dirname(__file__), "frontend", "dist")
+frontend_dist = os.path.join(PROJECT_ROOT, "frontend", "dist")
 if os.path.exists(frontend_dist):
     app.mount("/", StaticFiles(directory=frontend_dist, html=True), name="frontend")
 

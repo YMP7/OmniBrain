@@ -3,8 +3,11 @@ import sqlite3
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_community.vectorstores import FAISS
 
-FAISS_INDEX_PATH = "faiss_index"
-SQLITE_DB_PATH = "omnibrain.db"
+import os
+
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+FAISS_INDEX_PATH = os.path.join(PROJECT_ROOT, "faiss_index")
+SQLITE_DB_PATH = os.path.join(PROJECT_ROOT, "omnibrain.db")
 
 # ---------------------------------------------------------
 # 1. Search Agent

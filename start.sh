@@ -1,8 +1,7 @@
 #!/bin/bash
+# Initialize DB
+python backend/init_db.py
 
-# Initialize the SQLite Database
-python init_db.py
-
-# Start FastAPI backend (which also serves the React frontend statically)
+# Start the unified backend
 export PORT="${PORT:-8080}"
-uvicorn api:app --host 0.0.0.0 --port $PORT
+uvicorn backend.api:app --host 0.0.0.0 --port $PORT
