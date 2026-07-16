@@ -67,6 +67,8 @@ def ingest_pdf(pdf_path: str):
         vectorstore.save_local(FAISS_INDEX_PATH)
         print(f"Successfully ingested {len(documents)} chunks into FAISS.")
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         raise RuntimeError(f"Embedding/Vector DB operation failed: {e}")
 
 if __name__ == "__main__":
