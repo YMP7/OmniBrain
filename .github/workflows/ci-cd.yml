@@ -48,6 +48,10 @@ jobs:
         run: |
           pip install playwright httpx
           playwright install --with-deps chromium
+          # Start the backend API server in the background
+          uvicorn backend.api:app --host 0.0.0.0 --port 8000 &
+          # Wait for backend to boot up
+          sleep 3
           # Start the frontend dev server in the background for Playwright to hit
           cd frontend && npm run dev &
           # Wait for Vite to boot up
