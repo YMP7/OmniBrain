@@ -93,11 +93,14 @@ def test_functional_backend():
         return
         
     print("1. Uploading PDF to /upload (Mocked Embeddings)...")
-    with patch("backend.ingestion.OpenAIEmbeddings") as MockEmbeddings:
-        # Mock embedding vectors so ingestion doesn't call OpenAI
-        # embed_documents takes a list of texts and should return a list of equal length
-        mock_instance = MockEmbeddings.return_value
-        mock_instance.embed_documents.side_effect = lambda texts: [[0.1] * 1536 for _ in texts]
+    from langchain_core.embeddings import Embeddings
+    class DummyEmbeddings(Embeddings):
+        def embed_documents(self, texts):
+            return [[0.1] * 1536 for _ in texts]
+        def embed_query(self, text):
+            return [0.1] * 1536
+
+    with patch("backend.ingestion.OpenAIEmbeddings", return_value=DummyEmbeddings()):
         with open(pdf_path, "rb") as f:
             res = client.post("/upload", files={"file": f})
         assert res.status_code == 200, f"Upload failed: {res.text}"
