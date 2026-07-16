@@ -52,7 +52,6 @@ jobs:
           cd frontend && npm run dev &
           # Wait for Vite to boot up
           sleep 5
-          cd ..
           python tests/test_e2e.py
 
   deploy:
