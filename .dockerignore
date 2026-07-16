@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.log
+.system_generated/
+test_data/
+extracted_images/
+faiss_index/
+omnibrain.db
+test_e2e.py
+generate_test_pdf.py
+.env
