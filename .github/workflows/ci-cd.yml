@@ -46,7 +46,13 @@ jobs:
 
       - name: Run E2E Tests (Playwright/Mocked)
         run: |
+          pip install playwright httpx
           playwright install --with-deps chromium
+          # Start the frontend dev server in the background for Playwright to hit
+          cd frontend && npm run dev &
+          # Wait for Vite to boot up
+          sleep 5
+          cd ..
           python tests/test_e2e.py
 
   deploy:
