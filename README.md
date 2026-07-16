@@ -1,6 +1,7 @@
 # OmniBrain — Agentic Multi-Modal RAG Orchestrator
 
 <p align="left">
+  <img src="https://github.com/USERNAME/OmniBrain/actions/workflows/ci-cd.yml/badge.svg" alt="CI/CD Pipeline">
   <img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python 3.10+">
   <img src="https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=black" alt="React 18">
   <img src="https://img.shields.io/badge/FastAPI-Backend-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI">
@@ -176,6 +177,12 @@ Visit `http://localhost:8080` — FastAPI serves both the API and the built Reac
 3. The response includes `[Source: filename, Page: N]` citations for every factual claim.
 
 ---
+
+## CI/CD Pipeline
+
+OmniBrain uses GitHub Actions for continuous integration and deployment (`.github/workflows/ci-cd.yml`):
+- **CI (Test)**: Runs on every push and pull request to the `main` branch. It sets up the environment, builds the React frontend, initializes the SQLite database, and runs the Playwright End-to-End tests (which mock the OpenAI API to run offline).
+- **CD (Deploy)**: If the CI tests pass on a push to `main`, the CD job automatically deploys the latest version to Google Cloud Run using keyless authentication (Workload Identity Federation).
 
 ## Testing
 
