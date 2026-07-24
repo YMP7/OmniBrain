@@ -19,7 +19,7 @@
   <img src="https://img.shields.io/badge/license-all%20rights%20reserved-red?style=flat-square" alt="License: All Rights Reserved">
 </p>
 
-OmniBrain is a multi-agent system for answering complex questions over financial documents that mix unstructured text, structured data, and visual content (charts, tables, graphs). It uses a LangGraph-orchestrated supervisor to dynamically route sub-tasks to specialized agents, then synthesizes a single, cited answer grounded in the retrieved evidence.
+OmniBrain is a multi-agent AI system that understands financial documents containing text, tables, and charts. A LangGraph supervisor breaks complex queries into smaller tasks, assigns them to specialized agents, retrieves relevant information from multiple data sources, and combines the results into one accurate, cited answer.
 
 **Example use case:** feed in a multi-page financial report PDF, then ask a question like *"What was the Q3 revenue growth in Asia Pacific, and does it match the chart in the presentation?"* — OmniBrain retrieves the relevant text, reads the actual chart image, cross-references structured data, and returns one answer with `[Source, Page]` citations for every claim.
 
