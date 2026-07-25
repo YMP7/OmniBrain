@@ -50,7 +50,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-[100dvh] flex flex-col bg-zinc-950 text-zinc-100 font-sans antialiased">
+    <div className="min-h-100dvh flex flex-col bg-zinc-950 text-zinc-100 font-sans antialiased">
       {/* Header */}
       <header className="sticky top-0 z-20 w-full bg-zinc-950/80 backdrop-blur-md border-b border-zinc-900 px-6 py-4">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
@@ -100,7 +100,7 @@ export default function App() {
       </main>
 
       {/* Sticky Footer / Query Panel */}
-      <div className="fixed bottom-0 left-0 w-full p-6 bg-gradient-to-t from-zinc-950 via-zinc-950/90 to-transparent pointer-events-none z-30">
+      <div className="fixed bottom-0 left-0 w-full p-6 bg-linear-to-t from-zinc-950 via-zinc-950/90 to-transparent pointer-events-none z-30">
         <div className="max-w-3xl mx-auto pointer-events-auto">
           <QueryPanel onSubmit={handleQuery} isLoading={isQuerying} />
         </div>
