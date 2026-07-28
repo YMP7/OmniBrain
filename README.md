@@ -211,4 +211,4 @@ This runs Playwright-driven UI tests (rendering, error states) plus a backend fu
 
 ## License
 
-This is a personal portfolio project. No license is currently specified — all rights reserved unless otherwise stated.
+This is a personal portfolio project. No license is currently specified — all rights reserved unless otherwise stated. 
